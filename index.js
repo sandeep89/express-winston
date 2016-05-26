@@ -321,7 +321,7 @@ exports.logger = function logger(options) {
 
                 if (options.reqSplitMeta) {
                     options.reqSplitMeta.forEach(function (splitMeta) {
-                        logData[splitMeta] = req[splitMeta]
+                        logData[splitMeta] = logData.req || req[splitMeta];
                     });
                 }
 
