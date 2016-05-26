@@ -294,11 +294,13 @@ exports.logger = function logger(options) {
                     }
                 }
 
+                if (filteredHeaders) logData.req.body = filteredBody;
+
                 var headersWhitelist = _.union(options.headersWhitelist, (req._routeWhitelists.headers || []));
                 var headersblacklist = _.union(options.headersBlacklist, (req._routeBlacklists.headers || []));
 
                 var filteredHeaders = null;
-
+                logData.req.headers = req.headers;
                 if (req.headers !== undefined) {
                     if (headersblacklist.length > 0 && headersWhitelist.length === 0) {
                         var whitelist = _.difference(Object.keys(req.headers), headersblacklist);
