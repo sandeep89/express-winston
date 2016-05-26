@@ -47,6 +47,19 @@ exports.bodyWhitelist = [];
 exports.bodyBlacklist = [];
 
 /**
+ * A default list of properties in the request body that are allowed to be logged.
+ * This will normally be empty here, since it should be done at the route level.
+ * @type {Array}
+ */
+exports.headersWhitelist = [];
+
+/**
+ * A default list of properties in the request body that are not allowed to be logged.
+ * @type {Array}
+ */
+exports.headersBlacklist = [];
+
+/**
  * A default list of properties in the response object that are allowed to be logged.
  * These properties will be safely included in the meta of the log.
  * @type {Array}
@@ -162,6 +175,8 @@ exports.logger = function logger(options) {
     options.requestWhitelist = options.requestWhitelist || exports.requestWhitelist;
     options.bodyWhitelist = options.bodyWhitelist || exports.bodyWhitelist;
     options.bodyBlacklist = options.bodyBlacklist || exports.bodyBlacklist;
+    options.headersWhitelist = options.headersWhitelist || exports.headersWhitelist;
+    options.headersBlacklist = options.headersBlacklist || exports.headersBlacklist;
     options.responseWhitelist = options.responseWhitelist || exports.responseWhitelist;
     options.requestFilter = options.requestFilter || exports.defaultRequestFilter;
     options.responseFilter = options.responseFilter || exports.defaultResponseFilter;
@@ -176,6 +191,9 @@ exports.logger = function logger(options) {
     options.expressFormat = options.expressFormat || false;
     options.ignoreRoute = options.ignoreRoute || function () { return false; };
     options.skip = options.skip || exports.defaultSkip;
+    options.reqSplitMeta = options.reqSplitMeta || null;
+    options.resSplitMeta = options.resSplitMeta || null;
+
 
     // Using mustache style templating
     var template = _.template(options.msg, {
@@ -268,6 +286,18 @@ exports.logger = function logger(options) {
                   var newMeta = {}
                   newMeta[options.metaField] = logData;
                   logData = newMeta;
+              }
+
+              if(options.reqSplitMeta){
+                  options.reqSplitMeta.forEach(function (splitMeta) {
+                      logData[splitMeta] = req[splitMeta]
+                  });
+              }
+
+              if(options.resSplitMeta){
+                  options.resSplitMeta.forEach(function (splitMeta) {
+                      logData[splitMeta] = res[splitMeta];
+                  })
               }
               meta = _.extend(meta, logData);
             }
