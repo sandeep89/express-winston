@@ -200,6 +200,8 @@ exports.logger = function logger(options) {
     options.skip = options.skip || exports.defaultSkip;
     options.reqSplitMeta = options.reqSplitMeta || null;
     options.resSplitMeta = options.resSplitMeta || null;
+    options.reqHeadersSplit = options.reqHeadersSplit || null;
+    options.customMetas = options.customMetas || null;
 
 
     // Using mustache style templating
@@ -328,7 +330,24 @@ exports.logger = function logger(options) {
                 if (options.resSplitMeta) {
                     options.resSplitMeta.forEach(function (splitMeta) {
                         logData[splitMeta] = res[splitMeta];
+                    });
+                }
+
+                if (options.reqHeadersSplit) {
+                    options.reqHeadersSplit.forEach(function (splitHeader) {
+                        var logAttrs = splitHeader('-');
+                        var logAttriVal = '';
+                        logAttrs.forEach(function (logAttr) {
+                            logAttriVal = logAttriVal == '' ?
+                            logAttriVal + logAttr : logAttriVal + '_' + logAttr;
+                        });
+                        logData[logAttriVal] = req.headers[splitHeader];
                     })
+                }
+                if (options.customMetas) {
+                    options.customMetas.forEach(function (customMeta) {
+                        logData[customMeta] = req[customMeta];
+                    });
                 }
                 meta = _.extend(meta, logData);
             }
