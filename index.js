@@ -339,7 +339,8 @@ exports.logger = function logger(options) {
                         var logAttriVal = '';
                         logAttrs.forEach(function (logAttr) {
                             logAttriVal = logAttriVal == '' ?
-                            logAttriVal + logAttr : logAttriVal + '_' + logAttr;
+                            logAttriVal + logAttr.toLowerCase() :
+                            logAttriVal + '_' + logAttr.toLowerCase();
                         });
                         logData[logAttriVal] = req.headers[splitHeader];
                     })
