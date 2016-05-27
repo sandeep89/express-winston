@@ -335,7 +335,7 @@ exports.logger = function logger(options) {
 
                 if (options.reqHeadersSplit) {
                     options.reqHeadersSplit.forEach(function (splitHeader) {
-                        var logAttrs = splitHeader('-');
+                        var logAttrs = splitHeader.split('-');
                         var logAttriVal = '';
                         logAttrs.forEach(function (logAttr) {
                             logAttriVal = logAttriVal == '' ?
